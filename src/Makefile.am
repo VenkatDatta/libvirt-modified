@@ -837,7 +837,9 @@ LXC_DRIVER_SOURCES =						\
 		lxc/lxc_process.c lxc/lxc_process.h		\
 		lxc/lxc_fuse.c lxc/lxc_fuse.h			\
 		lxc/lxc_native.c lxc/lxc_native.h		\
-		lxc/lxc_driver.c lxc/lxc_driver.h
+		lxc/lxc_driver.c lxc/lxc_driver.h		\
+		lxc/docker_parse_command.c lxc/docker_parse_command.h \
+		lxc/json.c lxc/json.h
 
 LXC_CONTROLLER_SOURCES =					\
 		$(LXC_MONITOR_PROTOCOL_GENERATED)		\
