@@ -46,6 +46,7 @@
 #include "virerror.h"
 #include "virlog.h"
 #include "datatypes.h"
+#include "docker_parse_command.h"
 #include "lxc_cgroup.h"
 #include "lxc_conf.h"
 #include "lxc_container.h"
@@ -1062,17 +1063,22 @@ static char *lxcConnectDomainXMLFromNative(virConnectPtr conn,
     if (virConnectDomainXMLFromNativeEnsureACL(conn) < 0)
         goto cleanup;
 
-    if (STRNEQ(nativeFormat, LXC_CONFIG_FORMAT)) {
-        virReportError(VIR_ERR_INVALID_ARG,
-                       _("unsupported config type %s"), nativeFormat);
-        goto cleanup;
+    if(STREQ(nativeFormat, DOCKER_CONFIG_FORMAT)) {
+        if (!(def = dockerParseCommandLineString(caps, driver->xmlopt,nativeConfig)))
+            goto cleanup;
+         xml = virDomainDefFormat(def, caps, 0);
     }
+    else{
+        if (STRNEQ(nativeFormat, LXC_CONFIG_FORMAT)) {
+            virReportError(VIR_ERR_INVALID_ARG,
+                       _("unsupported config type %s"), nativeFormat);
+            goto cleanup;
+        }
+        if (!(def = lxcParseConfigString(nativeConfig, caps, driver->xmlopt)))
+            goto cleanup;
 
-    if (!(def = lxcParseConfigString(nativeConfig, caps, driver->xmlopt)))
-        goto cleanup;
-
-    xml = virDomainDefFormat(def, caps, 0);
-
+        xml = virDomainDefFormat(def, caps, 0);
+    }
  cleanup:
     virObjectUnref(caps);
     virDomainDefFree(def);

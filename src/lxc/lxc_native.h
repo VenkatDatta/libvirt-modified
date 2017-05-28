@@ -27,6 +27,8 @@
 
 # define LXC_CONFIG_FORMAT "lxc-tools"
 
+# define DOCKER_CONFIG_FORMAT "docker-argv"
+
 virDomainDefPtr lxcParseConfigString(const char *config,
                                      virCapsPtr caps,
                                      virDomainXMLOptionPtr xmlopt);
